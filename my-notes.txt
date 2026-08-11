@@ -12,3 +12,5 @@ Constructor Initializer lists can initialize fields when the object is made
         { 
             constructor part 
         }
+
+Using unsigned ints gives some validation about the content of the fields --> they are not negative
