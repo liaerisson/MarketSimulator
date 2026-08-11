@@ -1,0 +1,14 @@
+The order book types seem to be really critical to maintaining it's function.
+  * BUY/SELL designations need to be separated from specific "turn" actions
+  * price is a 64-bit int so that cents can be included without creating weird calculation issues that occur with doubles
+  * quantity MUST be positive, so an unsigned int is the way
+
+Constructor Initializer lists can initialize fields when the object is made
+  * apparently this is used to have const fields
+  * it's also good for performance
+    
+    Order(int orderId, int traerId, ...) 
+        : orderId(orderId), traderId(traderId), ... 
+        { 
+            constructor part 
+        }
