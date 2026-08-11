@@ -49,6 +49,10 @@ class Order {
 
             this->quantity = quantity - purchased;
         }
+
+        std::uint64_t getTraderId() const {
+            return traderId;
+        }
 };
 
 struct OrderLocation {
@@ -88,19 +92,24 @@ class OrderBook {
             location.side = side;
 
             if(side == Side::BUY) {
-                buys[price].push_back(newOrder);
-                
-                auto spot = buys[price].end();
-                --spot;
-                location.iterator = spot;
+                //group references the actual list in the map, so manipulations still apply to it
+                auto& group = buys[price];
+                group.push_back(newOrder);
+                location.iterator = std::prev(group.end());
+            
             } else if(side == Side::SELL) {
-                sells[price].push_back(newOrder);
-                
-                auto spot = sells[price].end();
-                --spot;
-                location.iterator = spot;
+                auto& group = sells[price];
+                group.push_back(newOrder);
+                location.iterator = std::prev(group.end());
             }
 
             orderLookup.insert({order, location});
+        }
+
+        void cancelOrder(std::uint64_t orderId, std::uint64_t traderId) {
+            Order currentOrder = *(orderLookup.at(orderId).iterator);
+            if(currentOrder.getTraderId() != traderId) {
+                throw std::invalid_argument("Only the trader who made the order may cancel it.");
+            }
         }
 };

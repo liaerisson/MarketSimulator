@@ -21,6 +21,7 @@ order books need to decide who gets to buy/sell their orders first
 
   maps are sorted in C++, and then a queue is good for picking between traders who said the same price
     --> there are unordered maps that store the relations without sorting them
+    --> lookups in map of O(log n) complexity, so they should be reduced if possible
   iterators! --> these seem to be able to "auto" loop through lists and hold a pointer to their beginning point
 
 Enums
