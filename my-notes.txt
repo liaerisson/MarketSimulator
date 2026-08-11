@@ -28,3 +28,12 @@ Enums
         if(side == Side::BUY) {}
 lists
   * to add an item to the list, use push_front() for the start and push_back() for the end
+
+the iterator value has to hold the location of the current last value in the array (the newest order!). end() gets us to one after the last element, so "deincrementing" is needed.
+                auto it = buys[price].end();
+                --it;
+                location.iterator = it;
+
+                OR
+
+                location.iterator = std::prev(buys[price].end());

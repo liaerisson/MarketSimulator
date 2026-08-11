@@ -59,10 +59,10 @@ struct OrderLocation {
 
 class OrderBook {
     private:
-        std::map<std::int64_t, std::list<Order>> sells;
-        std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys;
-        std::unordered_map<std::uint64_t, OrderLocation> orderLookup;
-        uint64_t orderId;
+        std::map<std::int64_t, std::list<Order>> sells; //price, list of orders with said price
+        std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys; //price, list of orders with said price
+        std::unordered_map<std::uint64_t, OrderLocation> orderLookup; //orderId, order location
+        std::uint64_t orderId;
         int sequenceNumber;
 
         std::uint64_t getNewOrderId() {
@@ -76,13 +76,31 @@ class OrderBook {
 
     public:
         OrderBook() : orderId(1), sequenceNumber(1) 
-        {
-        }
+        {}
 
-        void addOrder(std::uint64_t traderId, std::int64_t price, Side side, uint64_t quantity) {
-            Order newOrder = Order(getNewOrderId(), traderId, side, price, quantity, getNewSequenceNumber());
+        void addOrder(std::uint64_t traderId, std::int64_t price, Side side, std::uint64_t quantity) {
+            std::uint64_t order = getNewOrderId();
+            int sequenceNum = getNewSequenceNumber();
+            Order newOrder = Order(order, traderId, side, price, quantity, sequenceNum);
+            
+            OrderLocation location;
+            location.price = price;
+            location.side = side;
+
             if(side == Side::BUY) {
-                buys[price].push_back({newOrder});
+                buys[price].push_back(newOrder);
+                
+                auto spot = buys[price].end();
+                --spot;
+                location.iterator = spot;
+            } else if(side == Side::SELL) {
+                sells[price].push_back(newOrder);
+                
+                auto spot = sells[price].end();
+                --spot;
+                location.iterator = spot;
             }
+
+            orderLookup.insert({order, location});
         }
 };
