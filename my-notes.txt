@@ -14,3 +14,17 @@ Constructor Initializer lists can initialize fields when the object is made
         }
 
 Using unsigned ints gives some validation about the content of the fields --> they are not negative
+
+order books need to decide who gets to buy/sell their orders first
+  * this needs a way to prioritize certain traders, so a queue
+  * higher price = earlier buys, earlier time (for same price) > later time
+
+  maps are sorted in C++, and then a queue is good for picking between traders who said the same price
+    --> there are unordered maps that store the relations without sorting them
+  iterators! --> these seem to be able to "auto" loop through lists and hold a pointer to their beginning point
+
+Enums
+  * to use enums in an if statement:
+        if(side == Side::BUY) {}
+lists
+  * to add an item to the list, use push_front() for the start and push_back() for the end

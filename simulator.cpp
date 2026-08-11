@@ -1,5 +1,9 @@
 #include <cstdint>
 #include <stdexcept>
+#include <map>
+#include <queue>
+#include <list>
+#include <unordered_map>
 
 enum class Side {
     BUY, 
@@ -33,7 +37,7 @@ class Order {
         Order(std::uint64_t orderId, std::uint64_t traderId, 
             Side side, std::int64_t price, 
             std::uint64_t quantity, int sequenceNumber) 
-            : orderId(orderId), traderId(traderId), side(side), sequenceNumber(sequenceNumber), price(validatePrice(price)), quantity(validateQuantity(quantity))
+            : orderId(orderId), traderId(traderId), price(validatePrice(price)), side(side), quantity(validateQuantity(quantity)), sequenceNumber(sequenceNumber)
             {
             
         }
@@ -44,5 +48,41 @@ class Order {
             }
 
             this->quantity = quantity - purchased;
+        }
+};
+
+struct OrderLocation {
+            Side side;
+            std::int64_t price;
+            std::list<Order>::iterator iterator;
+};
+
+class OrderBook {
+    private:
+        std::map<std::int64_t, std::list<Order>> sells;
+        std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys;
+        std::unordered_map<std::uint64_t, OrderLocation> orderLookup;
+        uint64_t orderId;
+        int sequenceNumber;
+
+        std::uint64_t getNewOrderId() {
+            return orderId++;
+        }
+
+        int getNewSequenceNumber() {
+            return sequenceNumber++;
+        }
+
+
+    public:
+        OrderBook() : orderId(1), sequenceNumber(1) 
+        {
+        }
+
+        void addOrder(std::uint64_t traderId, std::int64_t price, Side side, uint64_t quantity) {
+            Order newOrder = Order(getNewOrderId(), traderId, side, price, quantity, getNewSequenceNumber());
+            if(side == Side::BUY) {
+                buys[price].push_back({newOrder});
+            }
         }
 };
