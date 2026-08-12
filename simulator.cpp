@@ -107,9 +107,34 @@ class OrderBook {
         }
 
         void cancelOrder(std::uint64_t orderId, std::uint64_t traderId) {
-            Order currentOrder = *(orderLookup.at(orderId).iterator);
-            if(currentOrder.getTraderId() != traderId) {
-                throw std::invalid_argument("Only the trader who made the order may cancel it.");
+            auto it = orderLookup.find(orderId);
+            if(it == orderLookup.end()) {
+                throw std::invalid_argument("Order ID does not exist."); 
             }
+
+            const OrderLocation& location = it->second;
+            const Order& currentOrder = *(it->second.iterator);
+
+            if(currentOrder.getTraderId() != traderId) {
+                throw std::invalid_argument("Trader does not own this order.");
+            }
+
+            if(location.side == Side::BUY) {
+                auto levelIt = buys.find(location.price);
+                levelIt->second.erase(location.iterator);
+
+                if(levelIt->second.empty()) {
+                    buys.erase(levelIt);
+                }
+            } else {
+                auto levelIt = sells.find(location.price);
+                levelIt->second.erase(location.iterator);
+                
+                if(levelIt->second.empty()) {
+                    sells.erase(levelIt);
+                }
+            }
+
+            orderLookup.erase(it);
         }
 };

@@ -38,3 +38,6 @@ the iterator value has to hold the location of the current last value in the arr
                 OR
 
                 location.iterator = std::prev(buys[price].end());
+
+auto it = orderLookup.find(orderId) --> a single map entry, with a pair of values
+  * it->first and it->second each point to one part of the map value-pair
