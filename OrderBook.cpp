@@ -17,6 +17,29 @@ int OrderBook::getNewSequenceNumber() {
     return sequenceNumber++;
 }
 
+void OrderBook::matchOrders(Order& newOrder) {
+    Side orderSide = newOrder.getSide();
+    std::int64_t orderPrice = newOrder.getPrice();
+
+    if(orderSide == Side::BUY) {
+        if(sells.empty()) { return; }
+
+        auto levelIt = sells.begin(); //an iterator starting at the top of the sells list
+        if(levelIt->first <= orderPrice) {
+            Order& currentOrder = levelIt->second.front();
+        }
+        //check first item in sell list, if price <= buy offer, then check values
+        //if number in sell list trader A < amount wanted to buy, clear order A, then start B etc...
+    } else {
+        if(buys.empty()) { return; }
+
+        auto levelIt = sells.begin();
+        if(levelIt->first >= orderPrice) {
+            Order& currentOrder = levelIt->second.front();
+
+        }
+    }
+}
 
 
 void OrderBook::addOrder(std::uint64_t traderId, std::int64_t price, Side side, std::uint64_t quantity) {
@@ -64,6 +87,14 @@ void OrderBook::cancelOrder(std::uint64_t orderId, std::uint64_t traderId) {
         throw std::invalid_argument("Trader does not own this order.");
     }
 
+    removeOrder(orderId);
+}
+
+void OrderBook::removeOrder(std::uint64_t orderId) {
+    auto it = orderLookup.find(orderId);
+    const OrderLocation& location = it->second;
+    const Order& currentOrder = *(it->second.iterator);
+    
     if(location.side == Side::BUY) {
         auto levelIt = buys.find(location.price);
         levelIt->second.erase(location.iterator);

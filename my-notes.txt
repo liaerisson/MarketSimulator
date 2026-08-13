@@ -55,3 +55,13 @@ Navigating MSYS2 UCRT64
   * ls -a shows the .cpp files
   * g++std=c++20... command above creates the exe file so the program can execute
   * from there, call ./orderbook (or the exe file name) to run it
+
+Order books have a "best sell"
+  - limit price = worst price to pay
+  - execution price = price that is actually paid (price wanted by seller)
+
+After looking into order book rules
+  - Sell: $100, Buy: $103 --> the $100 is the price
+  - Sell: $100, $102, Buy: $103 --> the $100 is still the price
+This also depends on the units, but the lower-priced sell price is filled first before going up to the maximum accepted price by the buyer
+  - Sell: $100, $103, Buy: $104 --> the $100 is the sell price
