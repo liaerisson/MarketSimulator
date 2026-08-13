@@ -50,3 +50,8 @@ compiling: g++ -std=c++20 main.cpp Order.cpp OrderBook.cpp -o orderbook
   --> std=c++20 sets the current standard of C++ like methods that are accessible and such
       since "contains()" for unordered_maps is c++20, I need to change standards from c++17
   --> Ctrl + Shift + P --> edit configuration (UI) --> change the standard for C++ --> Ctrl + Shift + P --> reset intellisense database (for VS code)
+
+Navigating MSYS2 UCRT64
+  * ls -a shows the .cpp files
+  * g++std=c++20... command above creates the exe file so the program can execute
+  * from there, call ./orderbook (or the exe file name) to run it
