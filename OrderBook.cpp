@@ -20,6 +20,14 @@ int OrderBook::getNewSequenceNumber() {
 
 
 void OrderBook::addOrder(std::uint64_t traderId, std::int64_t price, Side side, std::uint64_t quantity) {
+    if(price <= 0) {
+        throw std::invalid_argument("Price must be positive.");
+    }
+
+    if(quantity == 0) {
+        throw std::invalid_argument("Quantity must be >0.");
+    }
+    
     std::uint64_t order = getNewOrderId();
     int sequenceNum = getNewSequenceNumber();
     Order newOrder = Order(order, traderId, side, price, quantity, sequenceNum);

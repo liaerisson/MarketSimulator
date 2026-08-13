@@ -65,5 +65,41 @@ int main() {
         std::cout << e.what() << '\n';
     }
 
+    //constructor blocks low prices and quantities
+    try {
+        book.addOrder(1, 0, Side::BUY, 100);
+    } catch (const std::invalid_argument& e) {
+        std::cout << e.what() << '\n';
+    }
+    
+    if (!book.containsOrder(5)) {
+        std::cout << "Order was correctly not inserted.\n";
+    }
+
+    book.addOrder(2, 10000, Side::SELL, 30);
+    if (book.containsOrder(5)) {
+        std::cout << "Order was correctly inserted.\n";
+    }
+
+    try {
+        book.addOrder(1, -1, Side::BUY, 10);
+    } catch (const std::invalid_argument& e) {
+        std::cout << e.what() << '\n';
+    }
+
+    if (!book.containsOrder(6)) {
+        std::cout << "Order was correctly not inserted.\n";
+    }
+
+    try {
+        book.addOrder(1, 10000, Side::BUY, 0);
+    } catch (const std::invalid_argument& e) {
+        std::cout << e.what() << '\n';
+    }
+
+    if (!book.containsOrder(7)) {
+        std::cout << "Order was correctly not inserted.\n";
+    }
+
     return 0;
 }
