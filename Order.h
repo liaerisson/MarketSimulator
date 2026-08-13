@@ -31,4 +31,8 @@ class Order {
         void reduceQuantity(std::uint64_t purchased);
 
         std::uint64_t getTraderId() const;
+
+        Side getSide() const;
+
+        std::int64_t getPrice() const;
 };

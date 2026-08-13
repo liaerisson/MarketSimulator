@@ -49,3 +49,11 @@ void Order::reduceQuantity(std::uint64_t purchased) {
 std::uint64_t Order::getTraderId() const {
     return traderId;
 }
+
+Side Order::getSide() const {
+    return side;
+}
+
+std::int64_t Order::getPrice() const {
+    return price;
+}
