@@ -41,3 +41,12 @@ the iterator value has to hold the location of the current last value in the arr
 
 auto it = orderLookup.find(orderId) --> a single map entry, with a pair of values
   * it->first and it->second each point to one part of the map value-pair
+
+.h files --> headers
+  * headers exist to allow for cross-file access to classes, fields, and methods
+  * they include full structs and enums, and declarations of classes and their methods without full implementation
+
+compiling: g++ -std=c++20 main.cpp Order.cpp OrderBook.cpp -o orderbook
+  --> std=c++20 sets the current standard of C++ like methods that are accessible and such
+      since "contains()" for unordered_maps is c++20, I need to change standards from c++17
+  --> Ctrl + Shift + P --> edit configuration (UI) --> change the standard for C++ --> Ctrl + Shift + P --> reset intellisense database (for VS code)
