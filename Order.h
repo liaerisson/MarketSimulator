@@ -35,4 +35,8 @@ class Order {
         Side getSide() const;
 
         std::int64_t getPrice() const;
+
+        std::uint64_t getQuantity() const;
+
+        std::uint64_t getOrderId() const;
 };

@@ -65,3 +65,8 @@ After looking into order book rules
   - Sell: $100, $102, Buy: $103 --> the $100 is still the price
 This also depends on the units, but the lower-priced sell price is filled first before going up to the maximum accepted price by the buyer
   - Sell: $100, $103, Buy: $104 --> the $100 is the sell price
+
+Handling matches
+  --> it seems really redundant to check all the possible matches regularly
+  --> checking each new order against the currently-existing orders seems like the way
+  

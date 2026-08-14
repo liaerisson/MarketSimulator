@@ -57,3 +57,11 @@ Side Order::getSide() const {
 std::int64_t Order::getPrice() const {
     return price;
 }
+
+std::uint64_t Order::getQuantity() const {
+    return quantity;
+}
+
+std::uint64_t Order::getOrderId() const {
+    return orderId;
+}
