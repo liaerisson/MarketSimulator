@@ -13,7 +13,7 @@ std::uint64_t OrderBook::getNewOrderId() {
     return orderId++;
 }
 
-int OrderBook::getNewSequenceNumber() {
+std::uint64_t OrderBook::getNewSequenceNumber() {
     return sequenceNumber++;
 }
 
@@ -22,21 +22,51 @@ void OrderBook::matchOrders(Order& newOrder) {
     std::int64_t orderPrice = newOrder.getPrice();
 
     if(orderSide == Side::BUY) {
-        if(sells.empty()) { return; }
+        while(newOrder.getQuantity() > 0 && !sells.empty()) {
+            //an iterator starting at the top of the sells list
+            auto levelIt = sells.begin();
 
-        auto levelIt = sells.begin(); //an iterator starting at the top of the sells list
-        if(levelIt->first <= orderPrice) {
+            if(levelIt->first > orderPrice) {
+                break;
+            }
+
             Order& currentOrder = levelIt->second.front();
+            std::uint64_t newQuantity = newOrder.getQuantity();
+            std::uint64_t currentQuantity = currentOrder.getQuantity();
+
+            std::uint64_t fillQuantity = std::min(newQuantity, currentQuantity);
+            
+            currentOrder.reduceQuantity(fillQuantity);
+            newOrder.reduceQuantity(fillQuantity);
+
+            if(currentOrder.getQuantity() == 0) { 
+                removeOrder(currentOrder.getOrderId());
+            }
         }
+  
         //check first item in sell list, if price <= buy offer, then check values
         //if number in sell list trader A < amount wanted to buy, clear order A, then start B etc...
     } else {
-        if(buys.empty()) { return; }
+        while(newOrder.getQuantity() > 0 && !buys.empty()) {
+            //an iterator starting at the top of the sells list
+            auto levelIt = buys.begin();
 
-        auto levelIt = sells.begin();
-        if(levelIt->first >= orderPrice) {
+            if(levelIt->first < orderPrice) {
+                break;
+            }
+
             Order& currentOrder = levelIt->second.front();
+            std::uint64_t newQuantity = newOrder.getQuantity();
+            std::uint64_t currentQuantity = currentOrder.getQuantity();
 
+            std::uint64_t fillQuantity = std::min(newQuantity, currentQuantity);
+            
+            currentOrder.reduceQuantity(fillQuantity);
+            newOrder.reduceQuantity(fillQuantity);
+
+            if(currentOrder.getQuantity() == 0) { 
+                removeOrder(currentOrder.getOrderId());
+            }
         }
     }
 }
@@ -52,9 +82,14 @@ void OrderBook::addOrder(std::uint64_t traderId, std::int64_t price, Side side, 
     }
     
     std::uint64_t order = getNewOrderId();
-    int sequenceNum = getNewSequenceNumber();
+    std::uint64_t sequenceNum = getNewSequenceNumber();
     Order newOrder = Order(order, traderId, side, price, quantity, sequenceNum);
     
+    matchOrders(newOrder);
+    if(newOrder.getQuantity() == 0) {
+        return;
+    }
+
     OrderLocation location;
     location.price = price;
     location.side = side;

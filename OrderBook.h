@@ -20,11 +20,11 @@ class OrderBook {
         std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys; //price, list of orders with said price, highest buy prices first
         std::unordered_map<std::uint64_t, OrderLocation> orderLookup; //orderId, order location
         std::uint64_t orderId;
-        int sequenceNumber;
+        std::uint64_t sequenceNumber;
 
         std::uint64_t getNewOrderId();
         
-        int getNewSequenceNumber();
+        std::uint64_t getNewSequenceNumber();
         
         void matchOrders(Order& newOrder);
         
