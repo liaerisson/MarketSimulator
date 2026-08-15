@@ -13,7 +13,7 @@ class Order {
         const std::int64_t price;
         const Side side;
         std::uint64_t quantity;
-        const int sequenceNumber;
+        const std::uint64_t sequenceNumber;
 
         static std::int64_t validatePrice(std::int64_t price);
         static std::uint64_t validateQuantity(std::uint64_t quantity);
@@ -25,7 +25,7 @@ class Order {
             Side side, 
             std::int64_t price, 
             std::uint64_t quantity, 
-            int sequenceNumber
+            std::uint64_t sequenceNumber
         );
 
         void reduceQuantity(std::uint64_t purchased);

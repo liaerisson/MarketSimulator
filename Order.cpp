@@ -26,7 +26,7 @@ Order::Order(std::uint64_t orderId,
     Side side, 
     std::int64_t price, 
     std::uint64_t quantity, 
-    int sequenceNumber
+    std::uint64_t sequenceNumber
 ) 
     : orderId(orderId), 
     traderId(traderId), 

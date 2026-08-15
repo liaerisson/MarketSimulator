@@ -2,6 +2,7 @@
 
 #include <iterator>
 #include <stdexcept>
+#include <algorithm>
 
 OrderBook::OrderBook() 
     : orderId(1), 
