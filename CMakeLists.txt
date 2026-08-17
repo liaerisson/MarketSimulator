@@ -22,6 +22,7 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(orderbook_tests
     tests/OrderTests.cpp
+    tests/OrderBookTests.cpp
 )
 
 target_link_libraries(orderbook_tests

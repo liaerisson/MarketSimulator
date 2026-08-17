@@ -33,7 +33,7 @@ class OrderBook {
     public:
         OrderBook();
         
-        void addOrder(std::uint64_t traderId, std::int64_t price, Side side, std::uint64_t quantity);
+        void addOrder(std::uint64_t traderId, Side side, std::int64_t price, std::uint64_t quantity);
         
         void cancelOrder(std::uint64_t orderId, std::uint64_t traderId);
         
