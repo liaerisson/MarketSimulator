@@ -73,7 +73,7 @@ void OrderBook::matchOrders(Order& newOrder) {
 }
 
 
-void OrderBook::addOrder(std::uint64_t traderId, Side side, std::int64_t price, std::uint64_t quantity) {
+std::uint64_t OrderBook::addOrder(std::uint64_t traderId, Side side, std::int64_t price, std::uint64_t quantity) {
     if(price <= 0) {
         throw std::invalid_argument("Price must be positive.");
     }
@@ -82,13 +82,13 @@ void OrderBook::addOrder(std::uint64_t traderId, Side side, std::int64_t price, 
         throw std::invalid_argument("Quantity must be >0.");
     }
     
-    std::uint64_t order = getNewOrderId();
+    std::uint64_t orderId = getNewOrderId();
     std::uint64_t sequenceNum = getNewSequenceNumber();
-    Order newOrder = Order(order, traderId, side, price, quantity, sequenceNum);
+    Order newOrder = Order(orderId, traderId, side, price, quantity, sequenceNum);
     
     matchOrders(newOrder);
     if(newOrder.getQuantity() == 0) {
-        return;
+        return orderId;
     }
 
     OrderLocation location;
@@ -107,7 +107,8 @@ void OrderBook::addOrder(std::uint64_t traderId, Side side, std::int64_t price, 
         location.iterator = std::prev(group.end());
     }
 
-    orderLookup.insert({order, location});
+    orderLookup.insert({orderId, location});
+    return orderId;
 }
 
 void OrderBook::cancelOrder(std::uint64_t orderId, std::uint64_t traderId) {

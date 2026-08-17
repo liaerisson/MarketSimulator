@@ -80,3 +80,6 @@ Testing --> Catch2
     ctest --test-dir build
 
 catch2 has four main types of checks in its tests --> REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS, REQUIRE_FALSE
+
+I'm now realizing that for traders to know what to cancel, orderIds need to be returned somewhere
+  * I'm going to make addOrder return the id created in OrderBook
