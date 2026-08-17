@@ -70,3 +70,11 @@ Handling matches
   --> it seems really redundant to check all the possible matches regularly
   --> checking each new order against the currently-existing orders seems like the way
   
+Testing --> Catch2
+
+    git clone <repo-url>
+    cd MarketSimulator
+
+    cmake -S . -B build -A x64
+    cmake --build build
+    ctest --test-dir build
