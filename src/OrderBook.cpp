@@ -154,3 +154,19 @@ void OrderBook::removeOrder(std::uint64_t orderId) {
 bool OrderBook::containsOrder(std::uint64_t orderId) const {
     return orderLookup.contains(orderId);
 }
+
+std::optional<std::int64_t> OrderBook::getBestBid() const {
+    if (buys.empty()) {
+        return std::nullopt; //null optional
+    }
+
+    return buys.begin()->first; //highest buy price
+}
+
+std::optional<std::int64_t> OrderBook::getBestAsk() const {
+    if (sells.empty()) {
+        return std::nullopt;
+    }
+
+    return sells.begin()->first; //lowest sell price
+}

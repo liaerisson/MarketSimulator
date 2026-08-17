@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <unordered_map>
+#include <optional>
 
 struct OrderLocation {
     Side side;
@@ -38,4 +39,7 @@ class OrderBook {
         void cancelOrder(std::uint64_t orderId, std::uint64_t traderId);
         
         bool containsOrder(std::uint64_t orderId) const;
+
+        std::optional<std::int64_t> getBestBid() const;
+        std::optional<std::int64_t> getBestAsk() const;
 };

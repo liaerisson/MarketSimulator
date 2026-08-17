@@ -83,3 +83,7 @@ catch2 has four main types of checks in its tests --> REQUIRE, REQUIRE_NOTHROW, 
 
 I'm now realizing that for traders to know what to cancel, orderIds need to be returned somewhere
   * I'm going to make addOrder return the id created in OrderBook
+  * also allows for better Testing
+Upon testing I see that there is no way to check the bids/order of bids
+  * this is also bad for traders who need to see the best offer for them
+  * using std::optional getters to retrieve this field

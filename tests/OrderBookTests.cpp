@@ -86,3 +86,30 @@ TEST_CASE("orderId begins at one") {
     book.cancelOrder(1, 10);
     REQUIRE_FALSE(book.containsOrder(1));
 }
+
+TEST_CASE("Orderbook sorts buys in descending order") {
+    OrderBook book;
+    book.addOrder(1, Side::BUY, 5000, 10);
+    REQUIRE(book.getBestBid() == 5000);
+
+    book.addOrder(2, Side::BUY, 15000, 10);
+    REQUIRE(book.getBestBid() == 15000);
+}
+
+TEST_CASE("Orderbook sorts sells in ascending order") {
+    OrderBook book;
+    book.addOrder(1, Side::SELL, 15000, 10);
+    REQUIRE(book.getBestAsk() == 15000);
+
+    book.addOrder(2, Side::SELL, 5000, 10);
+    REQUIRE(book.getBestAsk() == 5000);
+}
+
+TEST_CASE("Orderbook removes price category correctly") {
+    OrderBook book;
+    auto id = book.addOrder(1, Side::BUY, 5000, 10);
+    REQUIRE(book.getBestBid() == 5000);
+
+    book.cancelOrder(id, 1);
+    REQUIRE_FALSE(book.getBestBid().has_value());
+}
