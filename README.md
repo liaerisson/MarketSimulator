@@ -13,8 +13,11 @@ The project currently supports order placement, cancellation, price-time priorit
 * Partial and full order fills
 * Order cancellation with trader ownership validation
 * Fast order lookup by ID
+* Best bid and best ask inspection
+* Active-order quantity lookup
 * Automatic cleanup of filled orders and empty price levels
 * Integer-based price representation to avoid floating-point comparison issues
+* Catch2 test suite covering validation, cancellation, matching, FIFO behavior, price priority, and price-boundary behavior
 
 ## Architecture
 
@@ -29,6 +32,7 @@ The implementation currently uses:
 * `std::map` for ordered price levels
 * `std::list` for FIFO order storage and stable iterators
 * `std::unordered_map` for direct order lookup during cancellation and matching
+* `std::optional` for read-only queries that may not have a value, such as best bid/ask on an empty book
 
 Each order contains:
 
@@ -47,7 +51,23 @@ Incoming orders attempt to match against the best available price on the opposit
 
 A buy order may execute against asks priced at or below its limit price, while a sell order may execute against bids priced at or above its limit price.
 
-When quantities differ, the smaller quantity is executed and the remaining quantity stays active until it is either filled or added to the book.
+Price priority is applied before time priority. At the same price level, orders are matched FIFO.
+
+When quantities differ, the smaller quantity is executed. A partially filled resting order remains active with its reduced quantity, while any unfilled portion of an incoming order is added to the book.
+
+## Build and Test
+
+The project uses CMake and Catch2.
+
+From the repository root on Windows with an x64 toolchain:
+
+```powershell
+cmake -S . -B build -A x64
+cmake --build build
+ctest --test-dir build
+```
+
+The current test suite holds 32 passing tests covering core `Order` and `OrderBook` behavior.
 
 ## Development Status
 
@@ -61,12 +81,14 @@ This project is actively under development.
 * [x] Order lookup
 * [x] Cancellation
 * [x] Matching
-* [x] Partial fills
+* [x] Partial and full fills
+* [x] Best bid / best ask inspection
+* [x] Catch2 unit and integration tests
+* [x] CTest integration
 
 ### Next
 
 * [ ] Trade/execution records
-* [x] Catch2 unit tests for order validation, cancellation, matching, FIFO, and price priority
 * [ ] Order book display and simulation output
 * [ ] Synthetic trader/order generation
 * [ ] Performance profiling and benchmarking

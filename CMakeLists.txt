@@ -20,6 +20,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+
+include(CTest)
+include(Catch)
+
 add_executable(orderbook_tests
     tests/OrderTests.cpp
     tests/OrderBookTests.cpp
@@ -30,3 +35,5 @@ target_link_libraries(orderbook_tests
     orderbook_core
     Catch2::Catch2WithMain
 )
+
+catch_discover_tests(orderbook_tests)
