@@ -42,4 +42,6 @@ class OrderBook {
 
         std::optional<std::int64_t> getBestBid() const;
         std::optional<std::int64_t> getBestAsk() const;
+
+        std::optional<std::uint64_t> getOrderQuantity(std::uint64_t orderId) const;
 };

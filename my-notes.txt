@@ -87,3 +87,6 @@ I'm now realizing that for traders to know what to cancel, orderIds need to be r
 Upon testing I see that there is no way to check the bids/order of bids
   * this is also bad for traders who need to see the best offer for them
   * using std::optional getters to retrieve this field
+
+Now testing the matching order mechanism --> how do I check if a quantity decreased in an order
+  * 

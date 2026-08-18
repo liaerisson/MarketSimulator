@@ -170,3 +170,13 @@ std::optional<std::int64_t> OrderBook::getBestAsk() const {
 
     return sells.begin()->first; //lowest sell price
 }
+
+std::optional<std::uint64_t> OrderBook::getOrderQuantity(std::uint64_t orderId) const {
+    auto it = orderLookup.find(orderId);
+
+    if (it == orderLookup.end()) {
+        return std::nullopt;
+    }
+
+    return it->second.iterator->getQuantity();
+}
