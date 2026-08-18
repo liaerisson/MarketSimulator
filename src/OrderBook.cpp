@@ -24,7 +24,6 @@ void OrderBook::matchOrders(Order& newOrder) {
 
     if(orderSide == Side::BUY) {
         while(newOrder.getQuantity() > 0 && !sells.empty()) {
-            //an iterator starting at the top of the sells list
             auto levelIt = sells.begin();
 
             if(levelIt->first > orderPrice) {
@@ -45,11 +44,8 @@ void OrderBook::matchOrders(Order& newOrder) {
             }
         }
   
-        //check first item in sell list, if price <= buy offer, then check values
-        //if number in sell list trader A < amount wanted to buy, clear order A, then start B etc...
     } else {
         while(newOrder.getQuantity() > 0 && !buys.empty()) {
-            //an iterator starting at the top of the sells list
             auto levelIt = buys.begin();
 
             if(levelIt->first < orderPrice) {
@@ -130,7 +126,6 @@ void OrderBook::cancelOrder(std::uint64_t orderId, std::uint64_t traderId) {
 void OrderBook::removeOrder(std::uint64_t orderId) {
     auto it = orderLookup.find(orderId);
     const OrderLocation& location = it->second;
-    const Order& currentOrder = *(it->second.iterator);
     
     if(location.side == Side::BUY) {
         auto levelIt = buys.find(location.price);

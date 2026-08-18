@@ -16,6 +16,13 @@ TEST_CASE("Order rejects negative price") {
     );
 }
 
+TEST_CASE("Order rejects price of zero") {
+    REQUIRE_THROWS_AS(
+        Order(1, 10, Side::BUY, 0, 10, 1),
+        std::invalid_argument
+    );
+}
+
 TEST_CASE("Order not thrown if valid") {
     REQUIRE_NOTHROW(
         Order(1, 10, Side::BUY, 10000, 10, 1)

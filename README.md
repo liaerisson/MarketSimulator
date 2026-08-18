@@ -66,7 +66,7 @@ This project is actively under development.
 ### Next
 
 * [ ] Trade/execution records
-* [ ] Unit and integration tests
+* [x] Catch2 unit tests for order validation, cancellation, matching, FIFO, and price priority
 * [ ] Order book display and simulation output
 * [ ] Synthetic trader/order generation
 * [ ] Performance profiling and benchmarking

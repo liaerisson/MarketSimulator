@@ -4,8 +4,8 @@
 
 TEST_CASE("Order created correctly") {
     OrderBook book;
-    book.addOrder(10, Side::BUY, 10000, 5);
-    REQUIRE(book.containsOrder(1));
+    auto id = book.addOrder(10, Side::BUY, 10000, 5);
+    REQUIRE(book.containsOrder(id));
 }
 
 TEST_CASE("Orderbook rejects price of zero") {
@@ -81,7 +81,7 @@ TEST_CASE("orderId begins at one") {
 
     auto id = book.addOrder(10, Side::BUY, 5000, 10);
     REQUIRE(id == 1);
-    REQUIRE(book.containsOrder(id));
+    REQUIRE(book.containsOrder(1));
 
     book.cancelOrder(1, 10);
     REQUIRE_FALSE(book.containsOrder(1));
