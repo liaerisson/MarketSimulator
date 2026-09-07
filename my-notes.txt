@@ -88,4 +88,7 @@ Upon testing I see that there is no way to check the bids/order of bids
   * using std::optional getters to retrieve this field
 
 Now testing the matching order mechanism --> how do I check if a quantity decreased in an order
-  * 
+  * resulting quantity following trade
+
+Trade --> the act of actually decreasing the resting buy/sell amount to correspond with an incoming order
+  * Trade is a more record-side thing, so it can be a struct rather than a full classes

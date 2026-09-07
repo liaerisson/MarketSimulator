@@ -28,6 +28,7 @@ include(Catch)
 add_executable(orderbook_tests
     tests/OrderTests.cpp
     tests/OrderBookTests.cpp
+    tests/TradeTests.cpp
 )
 
 target_link_libraries(orderbook_tests
