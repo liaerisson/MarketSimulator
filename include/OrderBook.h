@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Order.h"
+#include "Trade.h"
 
 #include <cstdint>
 #include <functional>
@@ -8,6 +9,7 @@
 #include <map>
 #include <unordered_map>
 #include <optional>
+#include <vector>
 
 struct OrderLocation {
     Side side;
@@ -19,13 +21,19 @@ class OrderBook {
     private:
         std::map<std::int64_t, std::list<Order>> sells; //price, list of orders with said price, lowest sell prices first
         std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys; //price, list of orders with said price, highest buy prices first
+        
+        std::vector<Trade> trades;
+        
         std::unordered_map<std::uint64_t, OrderLocation> orderLookup; //orderId, order location
         std::uint64_t orderId;
         std::uint64_t sequenceNumber;
+        std::uint64_t tradeId;
 
         std::uint64_t getNewOrderId();
         
         std::uint64_t getNewSequenceNumber();
+
+        std::uint64_t getNewTradeId();
         
         void matchOrders(Order& newOrder);
         
@@ -44,4 +52,6 @@ class OrderBook {
         std::optional<std::int64_t> getBestAsk() const;
 
         std::optional<std::uint64_t> getOrderQuantity(std::uint64_t orderId) const;
+        
+        const std::vector<Trade>& getTrades() const;
 };

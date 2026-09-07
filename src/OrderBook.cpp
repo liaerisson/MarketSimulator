@@ -6,7 +6,8 @@
 
 OrderBook::OrderBook() 
     : orderId(1), 
-    sequenceNumber(1) 
+    sequenceNumber(1),
+    tradeId(1)
 {
 }
 
@@ -16,6 +17,10 @@ std::uint64_t OrderBook::getNewOrderId() {
 
 std::uint64_t OrderBook::getNewSequenceNumber() {
     return sequenceNumber++;
+}
+
+std::uint64_t OrderBook::getNewTradeId() {
+    return tradeId++;
 }
 
 void OrderBook::matchOrders(Order& newOrder) {
@@ -174,4 +179,8 @@ std::optional<std::uint64_t> OrderBook::getOrderQuantity(std::uint64_t orderId) 
     }
 
     return it->second.iterator->getQuantity();
+}
+
+const std::vector<Trade>& OrderBook::getTrades() const {
+    return trades;
 }
