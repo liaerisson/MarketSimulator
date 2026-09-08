@@ -92,3 +92,12 @@ Now testing the matching order mechanism --> how do I check if a quantity decrea
 
 Trade --> the act of actually decreasing the resting buy/sell amount to correspond with an incoming order
   * Trade is a more record-side thing, so it can be a struct rather than a full classes
+  * Testing the trade creation means I need a way to check if two trades are equal --> equality operator
+
+Equality operator --> bool operator==(const Trade& left, const Trade& right)
+  * This checks if two trades are the same, so that the resulting records can be verified
+
+inline -- lets more than one cpp file get their own copy of the definition (in this case, TradeTests and OrderBookTests)
+  * Otherwise, the linker (stage after compilation that combines cpp files to the exe) may have issues with multiple versions of one function existing
+  
+  inline bool operator==(const Trade& left, const Trade& right)

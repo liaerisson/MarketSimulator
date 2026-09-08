@@ -2,40 +2,42 @@
 #include <stdexcept>
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("Order created correctly") {
+TEST_CASE("Order created correctly")
+{
     OrderBook book;
     auto id = book.addOrder(10, Side::BUY, 10000, 5);
     REQUIRE(book.containsOrder(id));
 }
 
-TEST_CASE("Orderbook rejects price of zero") {
+TEST_CASE("Orderbook rejects price of zero")
+{
     OrderBook book;
     REQUIRE_THROWS_AS(
-        book.addOrder(10, Side::BUY, 0, 5), 
-        std::invalid_argument
-    );
+        book.addOrder(10, Side::BUY, 0, 5),
+        std::invalid_argument);
     REQUIRE_FALSE(book.containsOrder(1));
 }
 
-TEST_CASE("Orderbook rejects negative price") {
+TEST_CASE("Orderbook rejects negative price")
+{
     OrderBook book;
     REQUIRE_THROWS_AS(
-        book.addOrder(10, Side::BUY, -500, 5), 
-        std::invalid_argument
-    );
+        book.addOrder(10, Side::BUY, -500, 5),
+        std::invalid_argument);
     REQUIRE_FALSE(book.containsOrder(1));
 }
 
-TEST_CASE("Orderbook rejects zero quantity") {
+TEST_CASE("Orderbook rejects zero quantity")
+{
     OrderBook book;
     REQUIRE_THROWS_AS(
-        book.addOrder(10, Side::BUY, 10000, 0), 
-        std::invalid_argument
-    );
+        book.addOrder(10, Side::BUY, 10000, 0),
+        std::invalid_argument);
     REQUIRE_FALSE(book.containsOrder(1));
 }
 
-TEST_CASE("Orderbook correctly cancels order") {
+TEST_CASE("Orderbook correctly cancels order")
+{
     OrderBook book;
     book.addOrder(10, Side::BUY, 10000, 5);
     book.cancelOrder(1, 10);
@@ -43,28 +45,29 @@ TEST_CASE("Orderbook correctly cancels order") {
     REQUIRE_FALSE(book.containsOrder(1));
 }
 
-TEST_CASE("Orderbook rejects cancelling by wrong trader") {
+TEST_CASE("Orderbook rejects cancelling by wrong trader")
+{
     OrderBook book;
     book.addOrder(10, Side::BUY, 10000, 5);
     REQUIRE_THROWS_AS(
         book.cancelOrder(1, 5),
-        std::invalid_argument
-    );
+        std::invalid_argument);
     REQUIRE(book.containsOrder(1));
 }
 
-TEST_CASE("Orderbook rejects cancelling nonexistent order") {
+TEST_CASE("Orderbook rejects cancelling nonexistent order")
+{
     OrderBook book;
     book.addOrder(10, Side::BUY, 10000, 5);
     REQUIRE_THROWS_AS(
         book.cancelOrder(2, 10),
-        std::invalid_argument
-    );
+        std::invalid_argument);
     REQUIRE(book.containsOrder(1));
     REQUIRE_FALSE(book.containsOrder(2));
 }
 
-TEST_CASE("containsOrder tracks active orders") {
+TEST_CASE("containsOrder tracks active orders")
+{
     OrderBook book;
     REQUIRE_FALSE(book.containsOrder(1));
 
@@ -75,7 +78,8 @@ TEST_CASE("containsOrder tracks active orders") {
     REQUIRE_FALSE(book.containsOrder(1));
 }
 
-TEST_CASE("orderId begins at one") {
+TEST_CASE("orderId begins at one")
+{
     OrderBook book;
     REQUIRE_FALSE(book.containsOrder(1));
 
@@ -87,7 +91,8 @@ TEST_CASE("orderId begins at one") {
     REQUIRE_FALSE(book.containsOrder(1));
 }
 
-TEST_CASE("Orderbook sorts buys in descending order") {
+TEST_CASE("Orderbook sorts buys in descending order")
+{
     OrderBook book;
     book.addOrder(1, Side::BUY, 5000, 10);
     REQUIRE(book.getBestBid() == 5000);
@@ -96,7 +101,8 @@ TEST_CASE("Orderbook sorts buys in descending order") {
     REQUIRE(book.getBestBid() == 15000);
 }
 
-TEST_CASE("Orderbook sorts sells in ascending order") {
+TEST_CASE("Orderbook sorts sells in ascending order")
+{
     OrderBook book;
     book.addOrder(1, Side::SELL, 15000, 10);
     REQUIRE(book.getBestAsk() == 15000);
@@ -105,7 +111,8 @@ TEST_CASE("Orderbook sorts sells in ascending order") {
     REQUIRE(book.getBestAsk() == 5000);
 }
 
-TEST_CASE("Orderbook removes price category correctly") {
+TEST_CASE("Orderbook removes price category correctly")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 10);
     REQUIRE(book.getBestBid() == 5000);
@@ -114,7 +121,8 @@ TEST_CASE("Orderbook removes price category correctly") {
     REQUIRE_FALSE(book.getBestBid().has_value());
 }
 
-TEST_CASE("Orderbook keeps non-crossing orders") {
+TEST_CASE("Orderbook keeps non-crossing orders")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 10);
     auto idTwo = book.addOrder(2, Side::SELL, 6000, 5);
@@ -123,10 +131,12 @@ TEST_CASE("Orderbook keeps non-crossing orders") {
     REQUIRE(book.getOrderQuantity(idTwo) == 5);
 }
 
-TEST_CASE("Orderbook matches at price boundary but not below it") {    OrderBook book;
+TEST_CASE("Orderbook matches at price boundary but not below it")
+{
+    OrderBook book;
     auto id = book.addOrder(1, Side::SELL, 5000, 10);
     auto idTwo = book.addOrder(2, Side::BUY, 4999, 5);
-    
+
     REQUIRE(book.getOrderQuantity(idTwo) == 5);
     REQUIRE(book.getOrderQuantity(id) == 10);
 
@@ -136,7 +146,8 @@ TEST_CASE("Orderbook matches at price boundary but not below it") {    OrderBook
     REQUIRE_FALSE(book.containsOrder(idThree));
 }
 
-TEST_CASE("Orderbook matches at sell price boundary but not above it") {
+TEST_CASE("Orderbook matches at sell price boundary but not above it")
+{
     OrderBook book;
 
     auto buyId = book.addOrder(1, Side::BUY, 5000, 10);
@@ -152,7 +163,8 @@ TEST_CASE("Orderbook matches at sell price boundary but not above it") {
     REQUIRE_FALSE(book.containsOrder(sellIdTwo));
 }
 
-TEST_CASE("Orderbook fully fills two orders with equal quantities") {
+TEST_CASE("Orderbook fully fills two orders with equal quantities")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 10);
     auto idTwo = book.addOrder(2, Side::SELL, 5000, 10);
@@ -161,7 +173,8 @@ TEST_CASE("Orderbook fully fills two orders with equal quantities") {
     REQUIRE_FALSE(book.containsOrder(idTwo));
 }
 
-TEST_CASE("Orderbook completes correct partial fill of resting order") {
+TEST_CASE("Orderbook completes correct partial fill of resting order")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 10);
     auto idTwo = book.addOrder(3, Side::SELL, 5000, 5);
@@ -170,7 +183,8 @@ TEST_CASE("Orderbook completes correct partial fill of resting order") {
     REQUIRE(book.getOrderQuantity(id) == 5);
 }
 
-TEST_CASE("Orderbook completes correct partial fill of incoming order") {
+TEST_CASE("Orderbook completes correct partial fill of incoming order")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 5);
     auto idTwo = book.addOrder(3, Side::SELL, 5000, 10);
@@ -179,7 +193,8 @@ TEST_CASE("Orderbook completes correct partial fill of incoming order") {
     REQUIRE(book.getOrderQuantity(idTwo) == 5);
 }
 
-TEST_CASE("Orderbook handles one incoming order causing multiple fills") {
+TEST_CASE("Orderbook handles one incoming order causing multiple fills")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 10);
     auto id2 = book.addOrder(2, Side::BUY, 5000, 100);
@@ -192,12 +207,13 @@ TEST_CASE("Orderbook handles one incoming order causing multiple fills") {
     REQUIRE(book.getOrderQuantity(id3) == 5);
 }
 
-TEST_CASE("Orderbook follows FIFO structure for incoming sells") {
+TEST_CASE("Orderbook follows FIFO structure for incoming sells")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::BUY, 5000, 10);
     auto id2 = book.addOrder(2, Side::BUY, 5000, 100);
     auto id3 = book.addOrder(3, Side::BUY, 5000, 150);
-    
+
     auto id4 = book.addOrder(4, Side::SELL, 4000, 50);
     REQUIRE_FALSE(book.containsOrder(id4));
     REQUIRE_FALSE(book.containsOrder(id));
@@ -214,12 +230,13 @@ TEST_CASE("Orderbook follows FIFO structure for incoming sells") {
     REQUIRE(book.getOrderQuantity(id3) == 60);
 }
 
-TEST_CASE("Orderbook follows FIFO structure for incoming buys") {
+TEST_CASE("Orderbook follows FIFO structure for incoming buys")
+{
     OrderBook book;
     auto id = book.addOrder(1, Side::SELL, 5000, 10);
     auto id2 = book.addOrder(2, Side::SELL, 5000, 100);
     auto id3 = book.addOrder(3, Side::SELL, 5000, 150);
-    
+
     auto id4 = book.addOrder(4, Side::BUY, 6000, 50);
     REQUIRE_FALSE(book.containsOrder(id4));
     REQUIRE_FALSE(book.containsOrder(id));
@@ -236,24 +253,37 @@ TEST_CASE("Orderbook follows FIFO structure for incoming buys") {
     REQUIRE(book.getOrderQuantity(id3) == 60);
 }
 
-TEST_CASE("Incoming sell matches highest bid first") {
+TEST_CASE("Incoming sell matches highest bid first")
+{
     OrderBook book;
     auto buyId = book.addOrder(1, Side::BUY, 5000, 10);
     auto buyId2 = book.addOrder(2, Side::BUY, 7000, 10);
-    
+
     auto sellId = book.addOrder(3, Side::SELL, 4000, 10);
     REQUIRE_FALSE(book.containsOrder(buyId2));
     REQUIRE(book.getOrderQuantity(buyId) == 10);
     REQUIRE_FALSE(book.containsOrder(sellId));
 }
 
-TEST_CASE("Incoming buy matches lowest ask first") {
+TEST_CASE("Incoming buy matches lowest ask first")
+{
     OrderBook book;
     auto sellId = book.addOrder(1, Side::SELL, 5000, 10);
     auto sellId2 = book.addOrder(2, Side::SELL, 7000, 10);
-    
+
     auto buyId = book.addOrder(3, Side::BUY, 8000, 10);
     REQUIRE_FALSE(book.containsOrder(sellId));
     REQUIRE(book.getOrderQuantity(sellId2) == 10);
     REQUIRE_FALSE(book.containsOrder(buyId));
+}
+
+// Trade test cases
+TEST_CASE("Trade logged correctly for one incoming buy with equal sell")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 5000, 10);
+    auto newBuy = book.addOrder(200, Side::BUY, 5000, 10);
+
+    REQUIRE(book.getTrades().size() == 1);
+    REQUIRE(book.getTrades().front() == Trade{1, newBuy, sellId, 200, 100, 5000, 10});
 }
