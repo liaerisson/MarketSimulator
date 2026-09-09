@@ -287,3 +287,153 @@ TEST_CASE("Trade logged correctly for one incoming buy with equal sell")
     REQUIRE(book.getTrades().size() == 1);
     REQUIRE(book.getTrades().front() == Trade{1, newBuy, sellId, 200, 100, 5000, 10});
 }
+
+TEST_CASE("Trade logged correctly for one incoming sell with equal buy")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 10);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 10);
+
+    REQUIRE(book.getTrades().size() == 1);
+    REQUIRE(book.getTrades().front() == Trade{1, buyId, newSell, 100, 200, 5000, 10});
+}
+
+TEST_CASE("Trade logged correctly for one incoming sell order covering multiple resting buy orders")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 10);
+    auto buyId2 = book.addOrder(200, Side::BUY, 5000, 15);
+    auto newSell = book.addOrder(300, Side::SELL, 5000, 25);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 300, 5000, 10});
+    REQUIRE(book.getTrades()[1] == Trade{2, buyId2, newSell, 200, 300, 5000, 15});
+}
+
+TEST_CASE("Trade logged correctly for one incoming buy order covering multiple resting sell orders")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 5000, 10);
+    auto sellId2 = book.addOrder(200, Side::SELL, 5000, 15);
+    auto newBuy = book.addOrder(300, Side::BUY, 5000, 25);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, newBuy, sellId, 300, 100, 5000, 10});
+    REQUIRE(book.getTrades()[1] == Trade{2, newBuy, sellId2, 300, 200, 5000, 15});
+}
+
+TEST_CASE("Trade logged correctly for multiple incoming sell orders covering one resting buy order")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 40);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 15);
+    auto newSell2 = book.addOrder(300, Side::SELL, 5000, 25);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 200, 5000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, buyId, newSell2, 100, 300, 5000, 25});
+}
+
+TEST_CASE("Trade logged correctly for multiple incoming buy orders covering one resting sell order")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 5000, 40);
+    auto newBuy = book.addOrder(200, Side::BUY, 5000, 15);
+    auto newBuy2 = book.addOrder(300, Side::BUY, 5000, 25);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, newBuy, sellId, 200, 100, 5000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, newBuy2, sellId, 300, 100, 5000, 25});
+}
+
+TEST_CASE("Trade logged correctly for one incoming sell order covering multiple resting buy orders of different prices")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 10);
+    auto buyId2 = book.addOrder(200, Side::BUY, 6000, 15);
+    auto newSell = book.addOrder(300, Side::SELL, 5000, 25);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId2, newSell, 200, 300, 6000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, buyId, newSell, 100, 300, 5000, 10});
+    
+    REQUIRE_FALSE(book.containsOrder(buyId));
+    REQUIRE_FALSE(book.containsOrder(buyId2));
+    REQUIRE_FALSE(book.containsOrder(newSell));
+}
+
+TEST_CASE("Trade logged correctly for one incoming buy order covering multiple resting sell orders of different prices")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 5000, 10);
+    auto sellId2 = book.addOrder(200, Side::SELL, 4000, 15);
+    auto newBuy = book.addOrder(300, Side::BUY, 5000, 25);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, newBuy, sellId2, 300, 200, 4000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, newBuy, sellId, 300, 100, 5000, 10});
+    
+    REQUIRE_FALSE(book.containsOrder(sellId));
+    REQUIRE_FALSE(book.containsOrder(sellId2));
+    REQUIRE_FALSE(book.containsOrder(newBuy));
+}
+
+TEST_CASE("Trade logged correctly for one incoming order covering multiple resting orders with leftover incoming order amount")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 5000, 10);
+    auto sellId2 = book.addOrder(200, Side::SELL, 4000, 15);
+    auto newBuy = book.addOrder(300, Side::BUY, 5000, 30);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, newBuy, sellId2, 300, 200, 4000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, newBuy, sellId, 300, 100, 5000, 10});
+    
+    REQUIRE_FALSE(book.containsOrder(sellId));
+    REQUIRE_FALSE(book.containsOrder(sellId2));
+    
+    REQUIRE(book.containsOrder(newBuy));
+    REQUIRE(book.getOrderQuantity(newBuy) == 5);
+}
+
+TEST_CASE("Trade doesn't get logged for non-crossing orders")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 6000, 10);
+    auto newBuy = book.addOrder(300, Side::BUY, 5000, 30);
+
+    REQUIRE(book.getTrades().size() == 0);
+    
+    REQUIRE(book.containsOrder(sellId));
+    REQUIRE(book.containsOrder(newBuy));
+}
+
+TEST_CASE("Trade not logged upon order cancellation")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 40);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 15);
+
+    REQUIRE(book.getTrades().size() == 1);
+    
+    book.cancelOrder(buyId, 100);
+    REQUIRE(book.getTrades().size() == 1);
+}
+
+TEST_CASE("Trade count increases globally")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 15);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 15);
+
+    REQUIRE(book.getTrades().size() == 1);
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 200, 5000, 15});
+
+    auto buyId2 = book.addOrder(300, Side::BUY, 3000, 15);
+    auto newSell2 = book.addOrder(400, Side::SELL, 3000, 20);
+
+    REQUIRE(book.getTrades().size() == 2);
+    
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 200, 5000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, buyId2, newSell2, 300, 400, 3000, 15});
+}
