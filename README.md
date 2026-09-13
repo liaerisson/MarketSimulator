@@ -18,6 +18,7 @@ The project currently supports order placement, cancellation, price-time priorit
 * Automatic cleanup of filled orders and empty price levels
 * Integer-based price representation to avoid floating-point comparison issues
 * Catch2 test suite covering validation, cancellation, matching, FIFO behavior, price priority, and price-boundary behavior
+* Trade history
 
 ## Architecture
 
@@ -33,6 +34,7 @@ The implementation currently uses:
 * `std::list` for FIFO order storage and stable iterators
 * `std::unordered_map` for direct order lookup during cancellation and matching
 * `std::optional` for read-only queries that may not have a value, such as best bid/ask on an empty book
+* `std::vector<Trade>` for recording trades in order of occurence
 
 Each order contains:
 
@@ -67,7 +69,7 @@ cmake --build build
 ctest --test-dir build
 ```
 
-The current test suite holds 32 passing tests covering core `Order` and `OrderBook` behavior.
+The current test suite holds 51 passing tests covering core `Order`, `OrderBook`, and `Trade` behavior.
 
 ## Development Status
 
@@ -85,10 +87,10 @@ This project is actively under development.
 * [x] Best bid / best ask inspection
 * [x] Catch2 unit and integration tests
 * [x] CTest integration
+* [X] Trade/execution records
 
 ### Next
 
-* [ ] Trade/execution records
 * [ ] Order book display and simulation output
 * [ ] Synthetic trader/order generation
 * [ ] Performance profiling and benchmarking
@@ -108,4 +110,4 @@ The main goal of the project is to develop a deeper understanding of:
 * Multithreading and synchronization
 * Performance measurement and optimization
 
-The eventual simulator will be used to explore how different trader behaviors and market conditions affect liquidity, spreads, execution, and price formation.
+I hope to use the eventual simulator to explore how different trader behaviors and market conditions affect liquidity, execution, and price formation.
