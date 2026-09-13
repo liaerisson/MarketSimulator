@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <catch2/catch_test_macros.hpp>
 
+
 TEST_CASE("Order created correctly")
 {
     OrderBook book;
@@ -265,7 +266,7 @@ TEST_CASE("Incoming sell matches highest bid first")
     REQUIRE_FALSE(book.containsOrder(sellId));
 }
 
-TEST_CASE("Incoming buy matches lowest ask first")
+TEST_CASE("Incoming buy matches lowest sell first")
 {
     OrderBook book;
     auto sellId = book.addOrder(1, Side::SELL, 5000, 10);
@@ -296,6 +297,26 @@ TEST_CASE("Trade logged correctly for one incoming sell with equal buy")
 
     REQUIRE(book.getTrades().size() == 1);
     REQUIRE(book.getTrades().front() == Trade{1, buyId, newSell, 100, 200, 5000, 10});
+}
+
+TEST_CASE("Trade logged correctly for one incoming buy with lower resting sell")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 5000, 10);
+    auto newBuy = book.addOrder(200, Side::BUY, 7000, 10);
+
+    REQUIRE(book.getTrades().size() == 1);
+    REQUIRE(book.getTrades().front() == Trade{1, newBuy, sellId, 200, 100, 5000, 10});
+}
+
+TEST_CASE("Trade logged correctly for one incoming sell with higher resting buy")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 6000, 10);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 10);
+
+    REQUIRE(book.getTrades().size() == 1);
+    REQUIRE(book.getTrades().front() == Trade{1, buyId, newSell, 100, 200, 6000, 10});
 }
 
 TEST_CASE("Trade logged correctly for one incoming sell order covering multiple resting buy orders")
@@ -378,7 +399,7 @@ TEST_CASE("Trade logged correctly for one incoming buy order covering multiple r
     REQUIRE_FALSE(book.containsOrder(newBuy));
 }
 
-TEST_CASE("Trade logged correctly for one incoming order covering multiple resting orders with leftover incoming order amount")
+TEST_CASE("Trade logged correctly for one incoming buy order covering multiple resting orders with leftover incoming order amount")
 {
     OrderBook book;
     auto sellId = book.addOrder(100, Side::SELL, 5000, 10);
@@ -394,6 +415,24 @@ TEST_CASE("Trade logged correctly for one incoming order covering multiple resti
     
     REQUIRE(book.containsOrder(newBuy));
     REQUIRE(book.getOrderQuantity(newBuy) == 5);
+}
+
+TEST_CASE("Trade logged correctly for one incoming sell order covering multiple resting orders with leftover incoming order amount")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 10);
+    auto buyId2 = book.addOrder(200, Side::BUY, 6000, 15);
+    auto newSell = book.addOrder(300, Side::SELL, 5000, 30);
+
+    REQUIRE(book.getTrades().size() == 2);
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId2, newSell, 200, 300, 6000, 15});
+    REQUIRE(book.getTrades()[1] == Trade{2, buyId, newSell, 100, 300, 5000, 10});
+    
+    REQUIRE_FALSE(book.containsOrder(buyId));
+    REQUIRE_FALSE(book.containsOrder(buyId2));
+    
+    REQUIRE(book.containsOrder(newSell));
+    REQUIRE(book.getOrderQuantity(newSell) == 5);
 }
 
 TEST_CASE("Trade doesn't get logged for non-crossing orders")
@@ -420,7 +459,32 @@ TEST_CASE("Trade not logged upon order cancellation")
     REQUIRE(book.getTrades().size() == 1);
 }
 
-TEST_CASE("Trade count increases globally")
+TEST_CASE("Trade history stays constant upon failed order cancellation")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 40);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 15);
+
+    REQUIRE(book.getTrades().size() == 1);
+
+    REQUIRE_THROWS_AS(book.cancelOrder(buyId, 300), std::invalid_argument);
+    REQUIRE(book.getTrades().size() == 1);
+}
+
+TEST_CASE("Trade not logged upon invalid order submission")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 40);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 15);
+    REQUIRE_THROWS_AS(book.addOrder(300, Side::SELL, 5000, 0), std::invalid_argument);
+
+    REQUIRE(book.getTrades().size() == 1);
+    
+    book.cancelOrder(buyId, 100);
+    REQUIRE(book.getTrades().size() == 1);
+}
+
+TEST_CASE("Trade count remains sequential across separate matchings")
 {
     OrderBook book;
     auto buyId = book.addOrder(100, Side::BUY, 5000, 15);
@@ -436,4 +500,16 @@ TEST_CASE("Trade count increases globally")
     
     REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 200, 5000, 15});
     REQUIRE(book.getTrades()[1] == Trade{2, buyId2, newSell2, 300, 400, 3000, 15});
+}
+
+TEST_CASE("Trade logs don't impact orders' remaining quantities")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 15);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 20);
+
+    REQUIRE(book.getTrades().size() == 1);
+    REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 200, 5000, 15});
+    REQUIRE(book.containsOrder(newSell));
+    REQUIRE(book.getOrderQuantity(newSell) == 5);
 }
