@@ -63,3 +63,7 @@ std::uint64_t Order::getQuantity() const {
 std::uint64_t Order::getOrderId() const {
     return orderId;
 }
+
+std::uint64_t Order::getSequenceNumber() const {
+    return sequenceNumber;
+}

@@ -2,6 +2,7 @@
 
 #include "Order.h"
 #include "Trade.h"
+#include "BookSnapshot.h"
 
 #include <cstdint>
 #include <functional>
@@ -54,4 +55,6 @@ class OrderBook {
         std::optional<std::uint64_t> getOrderQuantity(std::uint64_t orderId) const;
         
         const std::vector<Trade>& getTrades() const;
+
+        BookSnapshot getSnapshot() const;
 };

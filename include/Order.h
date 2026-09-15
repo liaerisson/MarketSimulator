@@ -39,4 +39,6 @@ class Order {
         std::uint64_t getQuantity() const;
 
         std::uint64_t getOrderId() const;
+
+        std::uint64_t getSequenceNumber() const;
 };

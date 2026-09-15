@@ -239,3 +239,7 @@ const std::vector<Trade> &OrderBook::getTrades() const
 {
     return trades;
 }
+
+BookSnapshot OrderBook::getSnapshot() const {
+    
+}
