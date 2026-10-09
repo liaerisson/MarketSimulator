@@ -513,3 +513,28 @@ TEST_CASE("Trade logs don't impact orders' remaining quantities")
     REQUIRE(book.containsOrder(newSell));
     REQUIRE(book.getOrderQuantity(newSell) == 5);
 }
+
+TEST_CASE("Get last trade returns most recent trade")
+{
+    OrderBook book;
+    auto buyId = book.addOrder(100, Side::BUY, 5000, 15);
+    auto newSell = book.addOrder(200, Side::SELL, 5000, 20);
+    REQUIRE(book.getTrades().size() == 1);
+
+    auto buyId2 = book.addOrder(300, Side::BUY, 3000, 15);
+    auto newSell2 = book.addOrder(400, Side::SELL, 3000, 20);
+    REQUIRE(book.getTrades().size() == 2);
+
+    REQUIRE(book.getTrades()[1] == Trade{2, buyId2, newSell2, 300, 400, 3000, 15});
+    REQUIRE(book.getLastTrade() == Trade{2, buyId2, newSell2, 300, 400, 3000, 15});
+}
+
+TEST_CASE("Get last trade with no trade returns nothing")
+{
+    OrderBook book;
+    auto sellId = book.addOrder(100, Side::SELL, 6000, 10);
+    auto newBuy = book.addOrder(300, Side::BUY, 5000, 30);
+
+    REQUIRE(book.getTrades().size() == 0);
+    REQUIRE(book.getLastTrade() == std::nullopt);
+}

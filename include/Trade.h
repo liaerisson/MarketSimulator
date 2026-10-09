@@ -11,7 +11,7 @@ struct Trade
     const std::uint64_t quantity;
 };
 
-inline bool operator==(const Trade &left, const Trade &right)
+inline bool operator == (const Trade &left, const Trade &right)
 {
     return (left.tradeId == right.tradeId && 
         left.buyOrderId == right.buyOrderId &&

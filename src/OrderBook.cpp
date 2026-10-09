@@ -235,11 +235,21 @@ std::optional<std::uint64_t> OrderBook::getOrderQuantity(std::uint64_t orderId) 
     return it->second.iterator->getQuantity();
 }
 
+std::optional<Trade> OrderBook::getLastTrade() const
+{
+    if (trades.empty())
+    {
+        return std::nullopt;
+    }
+
+    return trades.back(); // most recent trade
+}
+
 const std::vector<Trade> &OrderBook::getTrades() const
 {
     return trades;
 }
 
-BookSnapshot OrderBook::getSnapshot() const {
+/*BookSnapshot OrderBook::getSnapshot() const {
     
-}
+}*/

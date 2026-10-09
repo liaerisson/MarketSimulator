@@ -54,6 +54,7 @@ class OrderBook {
 
         std::optional<std::uint64_t> getOrderQuantity(std::uint64_t orderId) const;
         
+        std::optional<Trade> getLastTrade() const;
         const std::vector<Trade>& getTrades() const;
 
         BookSnapshot getSnapshot() const;
