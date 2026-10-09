@@ -101,3 +101,8 @@ inline -- lets more than one cpp file get their own copy of the definition (in t
   * Otherwise, the linker (stage after compilation that combines cpp files to the exe) may have issues with multiple versions of one function existing
   
   inline bool operator==(const Trade& left, const Trade& right)
+
+October 9 --> I can tell that I'm struggling to follow my past logic now that I'm constructing the snapshots/display.
+  * Adding comments to every method and key param
+
+Invariant --> a condition that should always remain true for an object or data structure when valid (ex. price > 0 and quantity > 0)
