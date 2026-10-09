@@ -61,7 +61,7 @@ When quantities differ, the smaller quantity is executed. A partially filled res
 
 The project uses CMake and Catch2.
 
-From the repository root on Windows with an x64 toolchain:
+From the repository root on Windows (x64):
 
 ```powershell
 cmake -S . -B build -A x64
@@ -69,7 +69,7 @@ cmake --build build
 ctest --test-dir build
 ```
 
-The current test suite holds 51 passing tests covering core `Order`, `OrderBook`, and `Trade` behavior.
+The current test suite holds 53 passing tests covering core `Order`, `OrderBook`, and `Trade` behavior.
 
 ## Development Status
 

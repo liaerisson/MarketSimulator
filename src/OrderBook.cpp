@@ -17,7 +17,7 @@ OrderBook::OrderBook()
 
 /**
  * @brief Get a new order ID
- * @return A new order ID  1 higher than the previous.
+ * @return A new order ID 1 higher than the previous.
  */
 std::uint64_t OrderBook::getNewOrderId()
 {
@@ -44,18 +44,18 @@ std::uint64_t OrderBook::getNewTradeId()
 
 /**
  * @brief Matches and trades incoming orders with crossing resting orders.
- * 
- * Matches the incoming order repeatedly against the best-priced resting orders until the incoming quantity 
+ *
+ * Matches the incoming order repeatedly against the best-priced resting orders until the incoming quantity
  * is fully filled, the opposite side of the book is empty, or the best available price no longer crosses
  * the incoming order's limit price.
  *
- * Within a price level, orders are matched in FIFO order. Each fill creates a Trade at the resting 
+ * Within a price level, orders are matched in FIFO order. Each fill creates a Trade at the resting
  * order's price. Fully filled resting orders are removed from the order book.
- * 
+ *
  * @param newOrder The incoming order to match. Its remaining quantity is reduced as fills occur.
- * @note A buy order crosses when its limit price is greater than or equal to the best ask. 
+ * @note A buy order crosses when its limit price is greater than or equal to the best ask.
  * A sell order crosses when its limit price is less than or equal to the best bid.
- * @note This method acts on the trades and adjusts the quantities of the orders. Meanwhile, addOrder() and removeOrder() 
+ * @note This method acts on the trades and adjusts the quantities of the orders. Meanwhile, addOrder() and removeOrder()
  * handle the subsequent process.
  */
 void OrderBook::matchOrders(Order &newOrder)
@@ -71,7 +71,7 @@ void OrderBook::matchOrders(Order &newOrder)
             auto levelIt = sells.begin();
 
             // Stop when the best ask exceeds the incoming buy's limit price.
-            if (levelIt->first > orderPrice) //buy can no longer cross
+            if (levelIt->first > orderPrice) // buy can no longer cross
             {
                 break;
             }
@@ -111,7 +111,7 @@ void OrderBook::matchOrders(Order &newOrder)
         {
             auto levelIt = buys.begin();
 
-            if (levelIt->first < orderPrice) //sell can no longer cross
+            if (levelIt->first < orderPrice) // sell can no longer cross
             {
                 break;
             }
@@ -275,7 +275,7 @@ void OrderBook::removeOrder(std::uint64_t orderId)
         }
     }
 
-    //Remove the iterator from orderLookup
+    // Remove the iterator from orderLookup
     orderLookup.erase(it);
 }
 
@@ -318,7 +318,7 @@ std::optional<std::int64_t> OrderBook::getBestAsk() const
 
 /**
  * @brief Get the quantity request in the specified order
- * 
+ *
  * @param orderId The order ID of which the quantity is needed.
  * @return The highest resting buy order price, or a null optional if there are no resting buy orders
  */
