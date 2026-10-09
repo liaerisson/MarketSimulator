@@ -15,13 +15,18 @@
 struct OrderLocation {
     Side side;
     std::int64_t price;
+    
+    // Orders at the same price are stored in arrival order.
+    // std::list gives stable iterators so orderLookup can point directly to resting orders.
     std::list<Order>::iterator iterator;
 };
 
 class OrderBook {
     private:
-        std::map<std::int64_t, std::list<Order>> sells; //price, list of orders with said price, lowest sell prices first
-        std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys; //price, list of orders with said price, highest buy prices first
+        // Price levels are ordered ascending so sells.begin() is always the best sell.
+        std::map<std::int64_t, std::list<Order>> sells;
+        // Price levels are ordered descending so buys.begin() is always the best bid.
+        std::map<std::int64_t, std::list<Order>, std::greater<std::int64_t>> buys;
         
         std::vector<Trade> trades;
         
