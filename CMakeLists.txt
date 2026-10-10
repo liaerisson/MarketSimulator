@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(orderbook_core
     src/Order.cpp 
     src/OrderBook.cpp
+    src/display/DebugDisplay.cpp
 )
 
 target_include_directories(orderbook_core PUBLIC include)
@@ -31,10 +32,19 @@ add_executable(orderbook_tests
     tests/TradeTests.cpp
 )
 
+add_executable(orderbook_demo
+    src/main.cpp
+)
+
 target_link_libraries(orderbook_tests
     PRIVATE
     orderbook_core
     Catch2::Catch2WithMain
+)
+
+target_link_libraries(orderbook_demo
+    PRIVATE
+    orderbook_core
 )
 
 catch_discover_tests(orderbook_tests)

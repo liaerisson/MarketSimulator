@@ -1,6 +1,6 @@
+#pragma once
 #include <cstdint>
 
-#include "OrderBook.h"
 #include <vector>
 
 // TODO: Add integration tests for BookSnapshot and debug display once the display layer is complete.

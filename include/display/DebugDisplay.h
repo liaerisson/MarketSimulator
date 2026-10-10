@@ -5,5 +5,7 @@
 
 #include <optional>
 #include <string>
+#include <vector>
+#include <algorithm>
 
-std::string formatDebugDisplay(const BookSnapshot& snapshot, const std::optional<Trade>& lastTrade);
+std::string formatDebugDisplay(const BookSnapshot &snapshot, const std::optional<Trade> &lastTrade);
