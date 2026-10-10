@@ -1,5 +1,7 @@
 # C++ Market Simulator
 
+![Market Simulator Demo](demo_image.png);
+
 A C++ limit order book and matching engine built to explore market microstructure, systems programming, and performance-oriented design.
 
 The project currently supports order placement, cancellation, price-time priority, and matching between buy and sell orders. It is being developed incrementally toward a larger market simulation with concurrent order flow, performance benchmarking, and trader behavior.
