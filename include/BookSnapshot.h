@@ -3,6 +3,10 @@
 #include "OrderBook.h"
 #include <vector>
 
+// TODO: Add integration tests for BookSnapshot and debug display once the display layer is complete.
+//snapshot ordering, FIFO preservation, partial-fill quantities, empty book behavior, latest trade shown correctly, final output debugging
+
+
 /**
  * @brief Frozen representation of a single resting order.
  */

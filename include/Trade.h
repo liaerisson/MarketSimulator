@@ -3,7 +3,7 @@
 /**
  * @brief Immutable record of a single trade execution.
  *
- * A Trade is created whenever an incoming order matches with a resting order.
+ * A Trade is created when an incoming order matches with a resting order.
  * It records the participating orders and traders, the execution price,
  * and the quantity filled.
  */
