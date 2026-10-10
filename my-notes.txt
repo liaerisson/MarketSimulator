@@ -107,3 +107,5 @@ October 9 --> I can tell that I'm struggling to follow my past logic now that I'
   * called 'Doxygen-style'
 
 Invariant --> a condition that should always remain true for an object or data structure when valid (ex. price > 0 and quantity > 0)
+
+size_t --> an unsigned integer type for object sizes and indices

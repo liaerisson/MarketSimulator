@@ -2,7 +2,8 @@
 #include <stdexcept>
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("Trade stores values correctly") {
+TEST_CASE("Trade stores values correctly")
+{
     Trade trade{
         1,
         10,
@@ -10,8 +11,7 @@ TEST_CASE("Trade stores values correctly") {
         100,
         200,
         5000,
-        25
-    };
+        25};
 
     REQUIRE(trade.tradeId == 1);
     REQUIRE(trade.buyOrderId == 10);

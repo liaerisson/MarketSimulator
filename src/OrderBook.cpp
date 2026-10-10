@@ -357,15 +357,17 @@ const std::vector<Trade> &OrderBook::getTrades() const
     return trades;
 }
 
-
-BookSnapshot OrderBook::getSnapshot() const {
+BookSnapshot OrderBook::getSnapshot() const
+{
     BookSnapshot book;
 
-    for (const auto& level : buys) {
+    for (const auto &level : buys)
+    {
         PriceLevelSnapshot priceLevel;
         priceLevel.price = level.first;
 
-        for (const auto& order : level.second) {
+        for (const auto &order : level.second)
+        {
             OrderSnapshot snapshot = {order.getSequenceNumber(), order.getOrderId(), order.getTraderId(), order.getQuantity()};
             priceLevel.orders.push_back(snapshot);
         }
@@ -373,11 +375,13 @@ BookSnapshot OrderBook::getSnapshot() const {
         book.buyPrices.push_back(priceLevel);
     }
 
-    for (const auto& level : sells) {
+    for (const auto &level : sells)
+    {
         PriceLevelSnapshot priceLevel;
         priceLevel.price = level.first;
 
-        for (const auto& order : level.second) {
+        for (const auto &order : level.second)
+        {
             OrderSnapshot snapshot = {order.getSequenceNumber(), order.getOrderId(), order.getTraderId(), order.getQuantity()};
             priceLevel.orders.push_back(snapshot);
         }

@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <catch2/catch_test_macros.hpp>
 
-
 TEST_CASE("Order created correctly")
 {
     OrderBook book;
@@ -377,7 +376,7 @@ TEST_CASE("Trade logged correctly for one incoming sell order covering multiple 
     REQUIRE(book.getTrades().size() == 2);
     REQUIRE(book.getTrades()[0] == Trade{1, buyId2, newSell, 200, 300, 6000, 15});
     REQUIRE(book.getTrades()[1] == Trade{2, buyId, newSell, 100, 300, 5000, 10});
-    
+
     REQUIRE_FALSE(book.containsOrder(buyId));
     REQUIRE_FALSE(book.containsOrder(buyId2));
     REQUIRE_FALSE(book.containsOrder(newSell));
@@ -393,7 +392,7 @@ TEST_CASE("Trade logged correctly for one incoming buy order covering multiple r
     REQUIRE(book.getTrades().size() == 2);
     REQUIRE(book.getTrades()[0] == Trade{1, newBuy, sellId2, 300, 200, 4000, 15});
     REQUIRE(book.getTrades()[1] == Trade{2, newBuy, sellId, 300, 100, 5000, 10});
-    
+
     REQUIRE_FALSE(book.containsOrder(sellId));
     REQUIRE_FALSE(book.containsOrder(sellId2));
     REQUIRE_FALSE(book.containsOrder(newBuy));
@@ -409,10 +408,10 @@ TEST_CASE("Trade logged correctly for one incoming buy order covering multiple r
     REQUIRE(book.getTrades().size() == 2);
     REQUIRE(book.getTrades()[0] == Trade{1, newBuy, sellId2, 300, 200, 4000, 15});
     REQUIRE(book.getTrades()[1] == Trade{2, newBuy, sellId, 300, 100, 5000, 10});
-    
+
     REQUIRE_FALSE(book.containsOrder(sellId));
     REQUIRE_FALSE(book.containsOrder(sellId2));
-    
+
     REQUIRE(book.containsOrder(newBuy));
     REQUIRE(book.getOrderQuantity(newBuy) == 5);
 }
@@ -427,10 +426,10 @@ TEST_CASE("Trade logged correctly for one incoming sell order covering multiple 
     REQUIRE(book.getTrades().size() == 2);
     REQUIRE(book.getTrades()[0] == Trade{1, buyId2, newSell, 200, 300, 6000, 15});
     REQUIRE(book.getTrades()[1] == Trade{2, buyId, newSell, 100, 300, 5000, 10});
-    
+
     REQUIRE_FALSE(book.containsOrder(buyId));
     REQUIRE_FALSE(book.containsOrder(buyId2));
-    
+
     REQUIRE(book.containsOrder(newSell));
     REQUIRE(book.getOrderQuantity(newSell) == 5);
 }
@@ -442,7 +441,7 @@ TEST_CASE("Trade doesn't get logged for non-crossing orders")
     auto newBuy = book.addOrder(300, Side::BUY, 5000, 30);
 
     REQUIRE(book.getTrades().size() == 0);
-    
+
     REQUIRE(book.containsOrder(sellId));
     REQUIRE(book.containsOrder(newBuy));
 }
@@ -454,7 +453,7 @@ TEST_CASE("Trade not logged upon order cancellation")
     auto newSell = book.addOrder(200, Side::SELL, 5000, 15);
 
     REQUIRE(book.getTrades().size() == 1);
-    
+
     book.cancelOrder(buyId, 100);
     REQUIRE(book.getTrades().size() == 1);
 }
@@ -479,7 +478,7 @@ TEST_CASE("Trade not logged upon invalid order submission")
     REQUIRE_THROWS_AS(book.addOrder(300, Side::SELL, 5000, 0), std::invalid_argument);
 
     REQUIRE(book.getTrades().size() == 1);
-    
+
     book.cancelOrder(buyId, 100);
     REQUIRE(book.getTrades().size() == 1);
 }
@@ -497,7 +496,7 @@ TEST_CASE("Trade count remains sequential across separate matchings")
     auto newSell2 = book.addOrder(400, Side::SELL, 3000, 20);
 
     REQUIRE(book.getTrades().size() == 2);
-    
+
     REQUIRE(book.getTrades()[0] == Trade{1, buyId, newSell, 100, 200, 5000, 15});
     REQUIRE(book.getTrades()[1] == Trade{2, buyId2, newSell2, 300, 400, 3000, 15});
 }
