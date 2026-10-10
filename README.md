@@ -1,6 +1,6 @@
 # C++ Market Simulator
 
-![Market Simulator Demo](demo_image.png);
+![Market Simulator Demo](demo_image.png)
 
 A C++ limit order book and matching engine built to explore market microstructure, systems programming, and performance-oriented design.
 
