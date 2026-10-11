@@ -110,3 +110,17 @@ Invariant --> a condition that should always remain true for an object or data s
 
 size_t --> an unsigned integer type for object sizes and indices
   * size_t seems to be used whenever size units are use, being compared, or looped until
+
+Generation of values from seeds in C++
+  * I wanted to be able to make simulated sets of orders without literally making "random" orders myself by the dozens
+  * To make seeds for generating values in C++, you use:
+
+  std::mt19937 generator(seed) and each thing generated uses 
+        std::uniform_int_distribution<std::uint64_t> traderDistribution(1, 100)
+        std::uint64_t traderId = traderDistribution(generator); --> the generator is helping to choose a 'random' value within the distribution
+
+Another note: you can a set amount of space for a vector
+  std::vector<GeneratedOrder> orderList;
+  orderList.reserve(orderCount); --> this gives the vector a size of orderCount prereserved
+
+  This change means the vector doesn't have to keep expanding each time a new value is pushed into it.
