@@ -7,6 +7,7 @@ add_library(orderbook_core
     src/Order.cpp 
     src/OrderBook.cpp
     src/display/DebugDisplay.cpp
+    src/display/TraderDisplay.cpp
 )
 
 target_include_directories(orderbook_core PUBLIC include)
