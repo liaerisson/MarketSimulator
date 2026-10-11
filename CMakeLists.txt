@@ -39,6 +39,13 @@ add_executable(orderbook_demo
     src/main.cpp
 )
 
+add_executable(orderbook_benchmark
+    src/benchmark/BenchmarkMain.cpp
+    src/benchmark/BenchmarkRunner.cpp
+    src/benchmark/BenchmarkCsv.cpp
+    src/simulation/OrderGenerator.cpp
+)
+
 target_link_libraries(orderbook_tests
     PRIVATE
     orderbook_core
@@ -46,6 +53,11 @@ target_link_libraries(orderbook_tests
 )
 
 target_link_libraries(orderbook_demo
+    PRIVATE
+    orderbook_core
+)
+
+target_link_libraries(orderbook_benchmark
     PRIVATE
     orderbook_core
 )
