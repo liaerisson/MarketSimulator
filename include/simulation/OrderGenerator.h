@@ -2,6 +2,7 @@
 
 #include "GeneratedOrder.h"
 #include <cstdint>
+#include <cstddef>
 #include <vector>
 #include <random>
 
