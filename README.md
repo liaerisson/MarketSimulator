@@ -117,7 +117,7 @@ cmake --build build
 ctest --test-dir build
 ```
 
-The current test suite contains 53 passing tests covering core `Order`, `OrderBook`, and `Trade` behavior.
+The current test suite contains 63 passing tests covering core `Order`, `OrderBook`, and `Trade` behavior.
 
 To run the demo:
 

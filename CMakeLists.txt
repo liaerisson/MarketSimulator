@@ -31,6 +31,8 @@ add_executable(orderbook_tests
     tests/OrderTests.cpp
     tests/OrderBookTests.cpp
     tests/TradeTests.cpp
+    tests/DisplayTests.cpp
+    tests/SnapshotTests.cpp
 )
 
 add_executable(orderbook_demo
