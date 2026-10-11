@@ -4,7 +4,7 @@
 
 A C++ limit order book and matching engine built to learn market microstructure, modern C++, concurrency, and performance measurement.
 
-The project currently supports order placement, cancellation, price-time priority, trade recording, order-book snapshots, and separate debug and trader-facing views. The remaining work is focused on concurrent order flow and benchmarking rather than expanding the simulator with more features.
+The project currently supports order placement, cancellation, price-time priority, trade recording, order-book snapshots, separate debug and trader-facing views, deterministic workload generation, and benchmark measurement. The remaining work is focused on introducing concurrency and measuring its effect on performance rather than expanding the simulator with more features.
 
 ## Current Features
 
@@ -22,8 +22,11 @@ The project currently supports order placement, cancellation, price-time priorit
 - Frozen order-book snapshots
 - Debug display with order-level information
 - Trader-facing display with aggregated depth, best bid, best ask, spread, and latest trade
+- Deterministic generated order workloads
+- Single-thread benchmark runner
+- CSV benchmark export
 - Catch2 and CTest test suite
-- Separate CMake targets for the core library, tests, and demo executable
+- Separate CMake targets for the core library, tests, demo, and benchmark executable
 
 ## Architecture
 
@@ -105,6 +108,28 @@ The trader view aggregates quantity by price level and shows:
 - Aggregated book depth
 - Latest execution price and quantity
 
+## Benchmarking
+
+The benchmark system uses pre-generated workloads so that different implementations can be compared using the same sequence of orders.
+
+Workload generation is excluded from the timed region. The benchmark measures only order submission and matching through the `OrderBook`.
+
+The current baseline configuration is:
+
+- Release build
+- 10 trials
+- 1,000,000 orders per trial
+- Seeds 1000-1009
+- Single-threaded execution
+- Raw results exported to CSV
+
+The current single-thread baseline averaged approximately:
+
+- **548 ms per 1,000,000 orders**
+- **1.82 million orders per second**
+
+These results will serve as the reference point for the concurrent implementation. The same workloads will be reused when benchmarking different thread counts so that throughput, speedup, and scaling efficiency can be compared directly.
+
 ## Build, Test, and Demo
 
 The project uses CMake and Catch2.
@@ -117,7 +142,7 @@ cmake --build build
 ctest --test-dir build
 ```
 
-The current test suite contains 79 passing tests covering core `Order`, `OrderBook`, and `Trade` behavior.
+The current test suite contains 79 passing tests covering `Order`, `OrderBook`, `Trade`, snapshots, and display behavior.
 
 To run the demo:
 
@@ -126,6 +151,15 @@ To run the demo:
 ```
 
 The demo prints both the debug and trader-facing views of a sample order book.
+
+To build and run the benchmark in Release mode:
+
+```powershell
+cmake --build build --config Release --target orderbook_benchmark
+.\build\Release\orderbook_benchmark.exe
+```
+
+The benchmark writes its results to CSV for later analysis.
 
 ## Development Status
 
@@ -145,15 +179,19 @@ The demo prints both the debug and trader-facing views of a sample order book.
 - [x] Order-book snapshots
 - [x] Debug display
 - [x] Trader-facing display
+- [x] Snapshot and display integration tests
 - [x] Demo executable
+- [x] Deterministic generated order workloads
+- [x] Single-thread benchmark runner
+- [x] CSV benchmark export
+- [x] Single-thread Release baseline
 
 ### Remaining
 
-- [ ] Snapshot and display integration tests
-- [ ] Minimal generated order flow for concurrency testing
 - [ ] Multithreaded order submission
 - [ ] Synchronization and thread-safety work
-- [ ] Performance profiling and benchmarking
+- [ ] Benchmarks at multiple thread counts
+- [ ] Throughput, speedup, and scaling analysis
 - [ ] Final cleanup and documentation
 
 The project will be considered complete once these are done.
@@ -170,5 +208,3 @@ The main goals of the project are to learn:
 - Testing and build tooling
 - Multithreading and synchronization
 - Performance measurement and optimization
-
-The remaining work is intentionally centered on concurrency and benchmarking. The simulation layer will stay minimal and only support those goals.

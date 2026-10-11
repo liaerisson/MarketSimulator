@@ -108,8 +108,10 @@ October 9 --> I can tell that I'm struggling to follow my past logic now that I'
 
 Invariant --> a condition that should always remain true for an object or data structure when valid (ex. price > 0 and quantity > 0)
 
+October 11 -->
 size_t --> an unsigned integer type for object sizes and indices
   * size_t seems to be used whenever size units are use, being compared, or looped until
+  * to use size_t, you need to do --> #include <cstddef>
 
 Generation of values from seeds in C++
   * I wanted to be able to make simulated sets of orders without literally making "random" orders myself by the dozens
@@ -124,3 +126,33 @@ Another note: you can a set amount of space for a vector
   orderList.reserve(orderCount); --> this gives the vector a size of orderCount prereserved
 
   This change means the vector doesn't have to keep expanding each time a new value is pushed into it.
+
+std::chrono::steady_clock --> a way to measure the amount time something takes to execute
+  It is used like:
+    auto start = std::chrono::steady_clock::now();
+    //stuff here
+    auto end = std::chrono::steady_clock::now();
+    auto elapsed = end - start;
+
+  However, this elapsed time isn't really a specific unit of time and it can be converted using cast:
+    std::chrono::duration_cast<desired unit of time>(elapsed)
+
+    Ex. auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed);
+
+    To get the amount of time/numerical time value, use .count() --> ns.count()
+
+Writing to csv files --> this uses the same process as cout, but with file <<
+    
+    std::ofstream file("results.csv");
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file.");
+    }
+
+    file << "trial,seed,time\n";
+
+  CSV file writing (in lines) -->
+    file << result.trial << ","
+     << result.seed << ","
+     << elapsedNs.count()
+     << "\n";

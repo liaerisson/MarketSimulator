@@ -3,6 +3,13 @@
 #include "Order.h"
 #include <cstdint>
 
+/**
+ * @brief Representation of an order before submission to the OrderBook.
+ *
+ * GeneratedOrder stores only the inputs needed by OrderBook::addOrder().
+ * It is used to create deterministic benchmark workloads independently of
+ * the OrderBook's internal ID and sequence-number generation.
+ */
 struct GeneratedOrder
 {
     std::uint64_t traderId;       // ID of the trader making the order

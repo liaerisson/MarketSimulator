@@ -23,6 +23,8 @@
  */
 BenchmarkResult runBenchmark(const std::vector<GeneratedOrder>& workload, std::uint32_t seed, std::size_t trial, std::size_t threadCount) {
     OrderBook book;
+    // Time only order submission and matching.
+    // Workload generation and result reporting are intentionally excluded.
     auto start = std::chrono::steady_clock::now();
     
     for (const GeneratedOrder& order : workload)

@@ -1,8 +1,20 @@
 #include "simulation/OrderGenerator.h"
 
+/**
+ * @brief Generates a deterministic sequence of order submissions.
+ *
+ * Orders are generated from uniform distributions using the supplied seed.
+ * Using the same seed and order count produces the same workload, allowing
+ * benchmark runs to be reproduced and compared.
+ *
+ * @param orderCount Number of orders to generate.
+ * @param seed Seed used by the pseudorandom number generator.
+ * @return Generated order workload.
+ */
 std::vector<GeneratedOrder> generateOrders(std::size_t orderCount, std::uint32_t seed) {
     std::mt19937 generator(seed);
 
+    // Reserve the full workload size to avoid repeated vector reallocations.
     std::vector<GeneratedOrder> orderList;
     orderList.reserve(orderCount);
     
@@ -37,6 +49,7 @@ std::vector<std::vector<GeneratedOrder>> generateTrials(std::size_t trialCount, 
     generatedTrials.reserve(trialCount);
 
     for(std::size_t i = 0; i < trialCount; i++) {
+        // Each trial uses a reproducible but distinct workload.
         generatedTrials.push_back(generateOrders(ordersPerTrial, baseSeed + i));
     }
 
